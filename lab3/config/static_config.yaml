@@ -1,0 +1,75 @@
+components_manager:
+  task_processors:
+    main-task-processor:
+      worker_threads: 4
+
+    fs-task-processor:
+      worker_threads: 1
+
+  default_task_processor: main-task-processor
+
+  components:
+    server:
+      listener:
+        port: 8080
+        task_processor: main-task-processor
+
+    logging:
+      fs-task-processor: fs-task-processor
+      loggers:
+        default:
+          file_path: '@stderr'
+          level: info
+          overflow_behavior: discard
+
+    default-server-middleware-pipeline-builder:
+      append:
+        - session-auth-middleware
+
+    session-auth-middleware: {}
+    hotel-booking-service: {}
+    testsuite-support: {}
+    dns-client: {}
+    postgres-db:
+      dbconnection: postgresql://hotel:hotel@postgres:5432/hotel_booking
+      blocking_task_processor: fs-task-processor
+
+    handler-auth-register:
+      path: /api/v1/auth/register
+      method: POST
+      task_processor: main-task-processor
+
+    handler-auth-login:
+      path: /api/v1/auth/login
+      method: POST
+      task_processor: main-task-processor
+
+    handler-user-by-login:
+      path: /api/v1/users/by-login/{login}
+      method: GET
+      task_processor: main-task-processor
+
+    handler-user-search:
+      path: /api/v1/users/search
+      method: GET
+      task_processor: main-task-processor
+
+    handler-hotels:
+      path: /api/v1/hotels
+      method: GET,POST
+      task_processor: main-task-processor
+
+    handler-bookings:
+      path: /api/v1/bookings
+      method: POST
+      task_processor: main-task-processor
+
+    handler-user-bookings:
+      path: /api/v1/users/{user_id}/bookings
+      method: GET
+      task_processor: main-task-processor
+
+    handler-booking-by-id:
+      path: /api/v1/bookings/{booking_id}
+      method: DELETE
+      task_processor: main-task-processor
