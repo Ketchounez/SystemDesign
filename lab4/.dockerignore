@@ -1,0 +1,5 @@
+build
+build_check
+.git
+*.md
+.DS_Store
